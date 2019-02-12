@@ -16,27 +16,24 @@ HEADERS = ["X-XSS-Protection",
            "Referrer-Policy",
            "Feature-Policy"]
 
-'''
-Attempts to check if the schema of a given URL is valid,
-prepends given schema if not; default HTTPS
-'''
 
-
-def checkSchema(target, schema="https"):
+def checkSchema(target: str, schema="https": str) -> str:
+    """
+    Attempts to check if the schema of a given URL is valid,
+    prepends given schema if not; default HTTPS
+    """
     parsed = urllib.parse.urlparse(target)
     return "{schema}://{target}".format(target=target, schema=schema)\
         if not bool(parsed.scheme) else target
 
 
-'''
-Parses a given target(s) - if a file is provided,
-attempts to parse assuming it's newline separated
-Also accepts a single target
-Returns results as a set
-'''
-
-
 def parseTargets(targets: str) -> set:
+    """
+    Parses a given target(s) - if a file is provided,
+    attempts to parse assuming it's newline separated
+    Also accepts a single target
+    Returns results as a set
+    """
     results = []
     if os.path.isfile(targets):
         with open(targets) as f:
@@ -47,13 +44,11 @@ def parseTargets(targets: str) -> set:
     return set(results)
 
 
-'''
-Converts a cookie string to a dict, expects the form:
-name1=value1; name2=value2; ...
-'''
-
-
 def cookieToDict(cookies: str) -> dict:
+    """
+    Converts a cookie string to a dict, expects the form:
+    name1=value1; name2=value2; ...
+    """
     finalCookies = {}
     if cookies is not None:
         cookieList = cookies.split(";")
@@ -63,15 +58,13 @@ def cookieToDict(cookies: str) -> dict:
     return finalCookies
 
 
-'''
-Gets security headers for given URL, returns as a list in the form:
-[URL,X-XSS-Protection,"X-Frame-Options,Content-Security-Policy,
-X-Content-Type-Options,"Referrer-Policy,Feature-Policy]
-Headers are returned as bool
-'''
-
-
 def getHeaders(target: str, cookies: str) -> list:
+    """
+    Gets security headers for given URL, returns as a list in the form:
+    [URL,X-XSS-Protection,"X-Frame-Options,Content-Security-Policy,
+    X-Content-Type-Options,"Referrer-Policy,Feature-Policy]
+    Headers are returned as bool
+    """
     try:
         result = requests.get(target, verify=False,
                               timeout=3, cookies=cookieToDict(cookies))
@@ -83,13 +76,11 @@ def getHeaders(target: str, cookies: str) -> list:
                                else False, HEADERS))
 
 
-'''
-Main function, takes a target name/file and parses them,
-passes to thread pool and ultimately writes to the outfile in CSV format
-'''
-
-
-def main(targets, cookies, outfile):
+def main(targets: str, cookies: str, outfile: str):
+    """
+    Main function, takes a target name/file and parses them,
+    passes to thread pool and ultimately writes to the outfile in CSV format
+    """
     targets = parseTargets(targets)
 
     args = ((target, cookies) for target in targets)
