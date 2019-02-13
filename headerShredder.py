@@ -17,7 +17,7 @@ HEADERS = ["X-XSS-Protection",
            "Feature-Policy"]
 
 
-def checkSchema(target: str, schema="https": str) -> str:
+def checkSchema(target: str, schema="https") -> str:
     """
     Attempts to check if the schema of a given URL is valid,
     prepends given schema if not; default HTTPS
