@@ -76,12 +76,28 @@ def getHeaders(target: str, cookies: str) -> list:
                                else False, HEADERS))
 
 
-def main(targets: str, cookies: str, outfile: str):
+def parseCustomHeaders(custom: str) -> list:
+    """
+    Parse string of semi-colon seperated custom headers in to a list
+    """
+    if ";" in custom:
+        if custom.endswith(';'):
+            custom = custom[:-1]
+        return custom.split(';')
+    else:
+        return [custom]
+
+
+def main(targets: str, cookies: str, outfile: str, customHeaders: str):
     """
     Main function, takes a target name/file and parses them,
     passes to thread pool and ultimately writes to the outfile in CSV format
     """
     targets = parseTargets(targets)
+
+    if customHeaders:
+        global HEADERS
+        HEADERS += parseCustomHeaders(customHeaders)
 
     args = ((target, cookies) for target in targets)
     with ThreadPoolExecutor(max_workers=5) as executor:
@@ -110,6 +126,10 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--outfile", default="shredder.csv",
                         help="File to write 'result info' to;\
                          CSV format; defaults to shredder.csv")
+    parser.add_argument("-x", "--custom-headers",
+                        help="A semi-colon seperated list of custom headers to\
+                        parse for",
+                        default="")
     args = parser.parse_args()
 
-    main(args.target, args.cookies, args.outfile)
+    main(args.target, args.cookies, args.outfile, args.custom_headers)

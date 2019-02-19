@@ -15,6 +15,9 @@ X-Content-Type-Options, Referrer-Policy, Feature-Policy`
   -o OUTFILE, --outfile OUTFILE
                         File to write 'result info' to; CSV format; defaults
                         to shredder.csv
+  -x CUSTOM_HEADERS, --custom-headers CUSTOM_HEADERS
+                        A semi-colon seperated list of custom headers to parse
+                        for
 ```
 
 ## Example input: input.txt
@@ -24,7 +27,7 @@ https://github.com/pulls
 https://old.reddit.com/r/programming/
 ```
 
-## Example usage:
+## Example usage
 `python3 headerShredder.py -t input.txt`
 
 ## Example output: shredder.csv
@@ -34,3 +37,6 @@ https://github.com/pulls,Yes,Yes,Yes,Yes,Yes,No
 https://old.reddit.com/r/programming/,Yes,Yes,No,Yes,No,No
 https://google.com,Yes,Yes,No,No,No,No
 ```
+
+## Example with custom headers
+`python3 headerShredder.py -t input.txt -x "basicauth;customvalue;etc"`
